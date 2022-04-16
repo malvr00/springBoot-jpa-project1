@@ -17,6 +17,11 @@ public class ItemRepository {
         if(item.getId() == null){
             em.persist(item);
         }else {
+            // 머지 방법 ( 준영속 상태 )
+            // item 키 값이 존재하지 않으면 find 해서 영속성 상태를 만듦
+            // 장점 : 단순할 경우 편함.
+            // 단점 : 전체 다 변경이 되고 원하는 부분은 변경이 어려움. 객체에 값이 빠져 있으면 DB에 null 값이 저장되게 됨
+            // 대도록이면 사용하면 안됨. 정말 단순할 경우에만 사용
             em.merge(item);
         }
     }
