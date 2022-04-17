@@ -96,6 +96,7 @@ public class OrderRepository {
 
     }
 
+    // 장점 : 재사용성 높음
     public List<Order> findAllWithMemberDelivery() {
         // fetch = lazy 무시하고 객체를 전부 다 가져옴
         return em.createQuery("select o from Order o" +
@@ -103,4 +104,14 @@ public class OrderRepository {
                 " join fetch o.delivery d", Order.class
         ).getResultList();
     }
+
+    // 장점 : V3보다 성능 최적화가 조금은 낫다
+    // 단점 : dto 의존성이 큼, 코드 지저분함
+//    public List<SimpleOrderQueryDto> findorderDtos() {
+//        return em.createQuery(
+//                "select new jpabook.jpashop.repository.SimpleOrderQueryDto(o.id, m.name, o.orderDate, o.status, d.address) from Order o" +
+//                        " join o.member m" +
+//                        " join o.delivery d", SimpleOrderQueryDto.class
+//        ).getResultList();
+//    }
 }
