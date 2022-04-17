@@ -37,9 +37,22 @@ public class OrderSimpleApiController {
     }
 
     //== 2 ==//
+    // 성능문제 N + 1 발생
     @GetMapping("/api/v2/simple-orders")
     public List<SimpleOrderDto> orderV2(){
         List<Order> orders = orderRepository.findAllByStirng(new OrderSearch());
+        List<SimpleOrderDto> result = orders.stream()
+                .map(o -> new SimpleOrderDto(o))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
+    //== 3 ==//
+    @GetMapping("/api/v3/simple-orders")
+    public List<SimpleOrderDto> orderV3(){
+       List<Order> orders = orderRepository.findAllWithMemberDelivery();
+
         List<SimpleOrderDto> result = orders.stream()
                 .map(o -> new SimpleOrderDto(o))
                 .collect(Collectors.toList());
