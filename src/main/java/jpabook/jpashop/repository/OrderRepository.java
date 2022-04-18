@@ -132,4 +132,22 @@ public class OrderRepository {
 //                .setMaxResults(100)
                 .getResultList();
     }
+
+    // default_batch_fetch_size: 100
+    // 장점
+    // 쿼리 호출 수가 1 + N -> 1 + 1 로 최적화 된다.
+    // 조인보다 DB 데이터 전송량이 최적화된다.
+    // 페치 조인 방식과 비교해서 쿼리 호출 수가 약간 증가하지만, DB 데이터 전송량이 감소한다.
+    // 컬렉션 페치 조인은 페이징이 불가능 하지만 이 방법은 페이징이 가능하다
+    // 결론
+    // ToOne 관계는 페치 조인해도 페이징에 영향을 주지 않는다.
+    // 따라서 ToOne 관계는 페치조인으로 쿼리 수를 줄이고 해해결하고, 나머지는 default_batch_fetch_size 로 최적화 한다.
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery("select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class
+                ).setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
 }

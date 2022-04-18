@@ -12,6 +12,8 @@ spring:
       hibernate:
 #        show_sql: true
         format_sql: true
+#        in query 개수 지정
+        default_batch_fetch_size: 100
 
 logging:
   level:
