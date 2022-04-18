@@ -105,6 +105,7 @@ public class OrderRepository {
         ).getResultList();
     }
 
+
     // 장점 : V3보다 성능 최적화가 조금은 낫다
     // 단점 : dto 의존성이 큼, 코드 지저분함
 //    public List<SimpleOrderQueryDto> findorderDtos() {
@@ -114,4 +115,21 @@ public class OrderRepository {
 //                        " join o.delivery d", SimpleOrderQueryDto.class
 //        ).getResultList();
 //    }
+    public List<Order> findAllWithItem() {
+        // db 에 있는 distinct 랑 다름. jpa 에서는 같은 객체도 제거 해줌
+        // OneToMany 사용 시 페이징 처리 불가능.
+        // 이유는 데이터 뻥튀기 되기 때문에 불가능.
+        // 모든 데이터를 가져오고 메모리에서 데이터를 퍼올림
+        // 페이징이 필요할 경우 사용하면 안됨
+        // 컬랙션 패치 조인은 하나만 써야함.
+        return em.createQuery(
+                        "select distinct o from Order o" +
+                                " join fetch o.member m" +
+                                " join fetch  o.delivery d" +
+                                " join fetch o.orderItems oi" +
+                                " join fetch oi.item i", Order.class)
+//                .setFirstResult(1)
+//                .setMaxResults(100)
+                .getResultList();
+    }
 }
